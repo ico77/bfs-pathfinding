@@ -1,0 +1,19 @@
+PATHFINDING DEMO
+
+Author: Ivica Gunjaca
+Language: C
+
+Description: 
+This is a short program demonstrating pathfinding using Breadth
+First Search in an unweighted graph represented as a 2D aray of integers.
+Value 0 in the array represents a node of the graph and the value 1 represents
+an obstacle. Because a 2D array is used, the node has a maximum of 8
+neighbours (the surrounding cells in the 2D array).
+
+Compilation:
+The glib2-devel package is a prerequisite for the program to compile.
+During development, I used the following to compile: 
+
+gcc -Wall `pkg-config --libs --cflags glib-2.0` Pathfinding.c
+
+This way, all the required glib2 headers and libraries are included. 
