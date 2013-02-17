@@ -22,11 +22,35 @@ int world[MAX_X][MAX_Y];
 int visited[MAX_X][MAX_Y];
 
 /*
+ * Free memory allocated to queue elements
+ */
+void free_queue_elements(GQueue* queue){
+  Node* queue_elem;
+
+  while (!g_queue_is_empty(queue)){
+    queue_elem = (Node*)g_queue_peek_head(queue);
+    g_queue_pop_head(queue);
+    free(queue_elem);
+  }
+}
+
+/*
+ * Tests Nodes @first and @second for equality
+ */
+gboolean is_nodes_equal(const Node* first, const Node* second){
+  if (((*first).x == (*second).x) && ((*first).y == (*second).y)){
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+/*
  * Finds the shortest path between @start and @end Node
  * using Breath First Search. Breath First Search can
  * be used because links between nodes are unweighted.  
  */
-void bfs(const Node* start, const Node* end){
+gboolean bfs(const Node* start, const Node* end){
   GQueue* queue = g_queue_new();
   Node* current_node = malloc(sizeof(Node));
   (*current_node).x = (*start).x;
@@ -69,9 +93,9 @@ void bfs(const Node* start, const Node* end){
 	
 	visited[i][j] = visited[(*current_node).x][(*current_node).y] + 1;
 	if (is_nodes_equal(neighbour, end)){
-	  printf("End node reached!!! \n");
 	  end_reached = TRUE;
-	  g_queue_clear(queue); // TO DO free remaining queue elements
+	  free_queue_elements(queue);
+	  g_queue_clear(queue); 
 	  break;
 	}
 	
@@ -86,17 +110,7 @@ void bfs(const Node* start, const Node* end){
   }
   
   g_queue_free(queue);
-}
-
-/*
- * Tests Nodes @first and @second for equality
- */
-gboolean is_nodes_equal(const Node* first, const Node* second){
-  if (((*first).x == (*second).x) && ((*first).y == (*second).y)){
-    return TRUE;
-  } else {
-    return FALSE;
-  }
+  return end_reached;
 }
 
 int main(){
@@ -134,15 +148,21 @@ int main(){
     }
   }
 
-  bfs(&start, &end);
+  gboolean result = bfs(&start, &end);
 
-  /* print path */
-  printf("To read the path, backtrack from the highest number to the lowest...\n");
-  for (i = 0;i < MAX_X;i++){
-    for (j = 0 ;j < MAX_Y;j++){
-      printf(" %3d ", visited[i][j]);
-      if (j == (MAX_Y - 1)) printf("\n");
+  if (result){
+    printf("End node reached!!! \n");
+    /* print path */
+    printf("To read the path, backtrack from the highest number to the lowest...\n");
+    for (i = 0;i < MAX_X;i++){
+      for (j = 0 ;j < MAX_Y;j++){
+	printf(" %3d ", visited[i][j]);
+	if (j == (MAX_Y - 1)) printf("\n");
+      }
     }
+  } else {
+    printf("End node can not be reached!!! \n");
   }
+
   return 0;  
 } 
