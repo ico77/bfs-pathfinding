@@ -32,7 +32,8 @@ void bfs(const Node* start, const Node* end){
   (*current_node).x = (*start).x;
   (*current_node).y = (*start).y;
   int i, j;
-    
+  gboolean end_reached = FALSE;
+  
   if (is_nodes_equal(start, end)){
     printf("Start node equals end node");
   }
@@ -69,12 +70,18 @@ void bfs(const Node* start, const Node* end){
 	visited[i][j] = visited[(*current_node).x][(*current_node).y] + 1;
 	if (is_nodes_equal(neighbour, end)){
 	  printf("End node reached!!! \n");
-	  return;
+	  end_reached = TRUE;
+	  g_queue_clear(queue); // TO DO free remaining queue elements
+	  break;
 	}
 	
 	g_queue_push_tail(queue, neighbour);
       }
+      if (end_reached){
+	break;
+      }
     }
+    
     free(current_node);
   }
   
